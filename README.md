@@ -4,7 +4,7 @@ This package includes a CLI script for deploying the latest Uniswap V3 smart con
 
 ## Usage
 
-Get the arguments for running the latest version of the script via `npx @uniswap/v3-deploy --help`
+Get the arguments for running the latest version of the script via `npx @uniswap/deploy-v3 --help`
 
 The smart contract verification process is specific to the network. For existing deployments, we have used the
 `@nomiclabs/hardhat-etherscan` hardhat plugin in the individual repositories to verify the deployment addresses.

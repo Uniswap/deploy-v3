@@ -2,6 +2,10 @@
 
 This package includes a CLI script for deploying the latest Uniswap V3 smart contracts to any EVM (Ethereum Virtual Machine) compatible network.
 
+## Licensing
+
+Please note that Uniswap Protocol v3 is under [BUSL license](https://github.com/Uniswap/v3-core#licensing) till 2023-04-01. To deploy on a new chain, please follow the Uniswap Governance Process to request a DAO vote to request an exception to the license.
+
 ## Usage
 
 Get the arguments for running the latest version of the script via `npx @uniswap/deploy-v3 --help`.

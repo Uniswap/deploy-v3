@@ -10,15 +10,15 @@ import { asciiStringToBytes32 } from './src/util/asciiStringToBytes32'
 import { version } from './package.json'
 
 program
-  .requiredOption('-pk, --private-key <string>', 'The private key used to deploy all contracts')
-  .requiredOption('-j, --json-rpc <url>', 'The JSON RPC URL where the program should be deployed')
-  .requiredOption('-w9, --weth9-address <address>', 'The address of the WETH9 contract to use')
-  .requiredOption('-ncl, --native-currency-label <string>', 'The label of the native currency, e.g. ETH')
+  .requiredOption('-pk, --private-key <string>', 'Private key used to deploy all contracts')
+  .requiredOption('-j, --json-rpc <url>', 'JSON RPC URL where the program should be deployed')
+  .requiredOption('-w9, --weth9-address <address>', 'Address of the WETH9 contract on this chain')
+  .requiredOption('-ncl, --native-currency-label <string>', 'Native currency label, e.g. ETH')
   .requiredOption(
     '-o, --owner-address <address>',
-    'The address of the contract that will own the deployed artifacts after the migration runs'
+    'Contract address that will own the deployed artifacts after the script runs'
   )
-  .option('-s, --state <path>', 'Path to the JSON file containing the migrations state', './state.json')
+  .option('-s, --state <path>', 'Path to the JSON file containing the migrations state (optional)', './state.json')
   .option('-v2, --v2-core-factory-address <address/', 'The V2 core factory address used in the swap router (optional)')
   .option('-g, --gas-price <number>', 'The gas price to pay in GWEI for each transaction (optional)')
   .option('-c, --confirmations <number>', 'How many confirmations to wait for after each transaction (optional)', '2')

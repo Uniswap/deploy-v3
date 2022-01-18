@@ -33,7 +33,7 @@ Options:
 This script runs a set of migrations, each migration deploying a contract or executing a transaction.
 
 To use the script, you must fund an address, and pass the private key to the script so it can construct and broadcast
-the deployment transactions. 
+the deployment transactions.
 
 The block explorer verification process (e.g. Etherscan) is specific to the network. For the existing deployments,
 we have used the `@nomiclabs/hardhat-etherscan` hardhat plugin in the individual repositories to verify the deployment addresses.
@@ -58,7 +58,7 @@ We estimate 30M - 40M gwei needed to run the full deploy script.
 
 ### When I run the script, it says "Contract was already deployed..."
 
-Delete `state.json` before a fresh deploy. `state.json` tracks which steps have already occurred. If there are any entries, the deploy script will attempt to pick up from the last step in `state.json`. 
+Delete `state.json` before a fresh deploy. `state.json` tracks which steps have already occurred. If there are any entries, the deploy script will attempt to pick up from the last step in `state.json`.
 
 ### Where can I see all the addresses where each contract is deployed?
 
@@ -71,4 +71,3 @@ Depends on the confirmation times and gas parameter. There are a total of 14 ind
 ### Where should I ask questions or report issues?
 
 You can file them in `issues` on this repo and we'll try our best to respond.
-

@@ -6,7 +6,7 @@ This package includes a CLI script for deploying the latest Uniswap V3 smart con
 
 Get the arguments for running the latest version of the script via `npx @uniswap/deploy-v3 --help`.
 
-As of `v1.0.1` the arguments are:
+As of `v1.0.2` the arguments are:
 
 ```text
 > npx @uniswap/deploy-v3 --help

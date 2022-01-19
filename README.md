@@ -4,7 +4,7 @@ This package includes a CLI script for deploying the latest Uniswap V3 smart con
 
 ## Licensing
 
-Please note that Uniswap Protocol v3 is under [BUSL license](https://github.com/Uniswap/v3-core#licensing) till 2023-04-01. To deploy on a new chain, please follow the Uniswap Governance Process to request a DAO vote to request an exception to the license.
+Please note that Uniswap Protocol v3 is under [BUSL license](https://github.com/Uniswap/v3-core#licensing) until 2023-04-01. To deploy on a new chain, please follow the Uniswap Governance Process to request a DAO vote to request an exception to the license.
 
 ## Usage
 

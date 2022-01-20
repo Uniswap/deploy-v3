@@ -9,6 +9,7 @@ To deploy on a new chain, please follow the Uniswap Governance Process to reques
 
 ## Usage
 
+This package vends a CLI for executing a deployment script that results in a full deployment of Uniswap Protocol v3.
 Get the arguments for running the latest version of the script via `npx @uniswap/deploy-v3 --help`.
 
 As of `v1.0.3` the arguments are:
@@ -31,10 +32,11 @@ Options:
   -h, --help                                display help for command
 ```
 
-This script runs a set of migrations, each migration deploying a contract or executing a transaction.
+The script runs a set of migrations, each migration deploying a contract or executing a transaction. Migration state is
+saved in a JSON file at the supplied path (by default `./state.json`).
 
-To use the script, you must fund an address, and pass the private key to the script so it can construct and broadcast
-the deployment transactions.
+To use the script, you must fund an address, and pass the private key of that address to the script so that it can construct
+and broadcast the deployment transactions.
 
 The block explorer verification process (e.g. Etherscan) is specific to the network. For the existing deployments,
 we have used the `@nomiclabs/hardhat-etherscan` hardhat plugin in the individual repositories to verify the deployment addresses.
@@ -55,7 +57,7 @@ Don't forget to push your tagged commit!
 
 ### How much gas should I expect to use for full completion?
 
-We estimate 30M - 40M gwei needed to run the full deploy script.
+We estimate 30M - 40M gas needed to run the full deploy script.
 
 ### When I run the script, it says "Contract was already deployed..."
 
@@ -67,7 +69,7 @@ Check out `state.json`. It'll show you the final deployed addresses.
 
 ### How long will the script take?
 
-Depends on the confirmation times and gas parameter. There are a total of 14 individual deploys on chain.
+Depends on the confirmation times and gas parameter. The deploy script sends up to a total of 14 transactions.
 
 ### Where should I ask questions or report issues?
 

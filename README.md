@@ -11,7 +11,7 @@ To deploy on a new chain, please follow the Uniswap Governance Process to reques
 
 Get the arguments for running the latest version of the script via `npx @uniswap/deploy-v3 --help`.
 
-As of `v1.0.2` the arguments are:
+As of `v1.0.3` the arguments are:
 
 ```text
 > npx @uniswap/deploy-v3 --help

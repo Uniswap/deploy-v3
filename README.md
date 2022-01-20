@@ -4,7 +4,8 @@ This package includes a CLI script for deploying the latest Uniswap V3 smart con
 
 ## Licensing
 
-Please note that Uniswap Protocol v3 is under [BUSL license](https://github.com/Uniswap/v3-core#licensing) until 2023-04-01. To deploy on a new chain, please follow the Uniswap Governance Process to request a DAO vote to request an exception to the license.
+Please note that Uniswap Protocol v3 is under [BUSL license](https://github.com/Uniswap/v3-core#licensing) until 2023-04-01.
+To deploy on a new chain, please follow the Uniswap Governance Process to request a DAO vote to request an exception to the license.
 
 ## Usage
 
@@ -17,17 +18,13 @@ As of `v1.0.2` the arguments are:
 Usage: npx @uniswap/deploy-v3 [options]
 
 Options:
-Usage: npx @uniswap/deploy-v3 [options]
-
-Options:
   -pk, --private-key <string>               Private key used to deploy all contracts
   -j, --json-rpc <url>                      JSON RPC URL where the program should be deployed
   -w9, --weth9-address <address>            Address of the WETH9 contract on this chain
   -ncl, --native-currency-label <string>    Native currency label, e.g. ETH
   -o, --owner-address <address>             Contract address that will own the deployed artifacts after the script runs
-  -s, --state <path>                        Path to the JSON file containing the migrations state (optional) (default: "./
-                                            state.json")
-  -v2, --v2-core-factory-address <address/  The V2 core factory address used in the swap router (optional)
+  -s, --state <path>                        Path to the JSON file containing the migrations state (optional) (default: "./state.json")
+  -v2, --v2-core-factory-address <address>  The V2 core factory address used in the swap router (optional)
   -g, --gas-price <number>                  The gas price to pay in GWEI for each transaction (optional)
   -c, --confirmations <number>              How many confirmations to wait for after each transaction (optional) (default: "2")
   -V, --version                             output the version number

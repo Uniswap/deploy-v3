@@ -12,7 +12,7 @@ License changes must be enacted by the [ENS domain](https://ens.domains/) uniswa
 
 - `node`: `namehash('uniswap.eth')`
 - `label`: `keccak256('v3-core-license-date')` or `keccak256('v3-core-license-grants')`
-- `owner`: [`0x1a9C8182C09F50C8318d769245beA52c32BE35BC`](https://etherscan.io/address/0x1a9c8182c09f50c8318d769245bea52c32be35bc), the Uniswap Governance Timelock  
+- `owner`: [`0x1a9C8182C09F50C8318d769245beA52c32BE35BC`](https://etherscan.io/address/0x1a9c8182c09f50c8318d769245bea52c32be35bc), the Uniswap Governance Timelock
 - `resolver`: [`0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41`](https://etherscan.io/address/0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41), the public ENS resolver.
 - `ttl`: `0`
 

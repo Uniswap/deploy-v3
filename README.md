@@ -4,8 +4,25 @@ This package includes a CLI script for deploying the latest Uniswap V3 smart con
 
 ## Licensing
 
-Please note that Uniswap Protocol v3 is under [BUSL license](https://github.com/Uniswap/v3-core#licensing) until 2023-04-01.
-To deploy on a new chain, please follow the Uniswap Governance Process to request a DAO vote to request an exception to the license.
+Please note that Uniswap V3 is under [BUSL license](https://github.com/Uniswap/v3-core#licensing) until the Change Date, currently 2023-04-01. Exceptions to the license may be specified by Uniswap Governance via Additional Use Grants, which can, for example, allow V3 to be deployed on new chains. Please follow the Uniswap Governance process to request a DAO vote for exceptions to the license, or to move up the Change Date.
+
+License changes must be enacted by the [ENS domain](https://ens.domains/) uniswap.eth, which is controlled by Uniswap Governance. This means (among other things) that Governance has the power to associate arbitrary text with any subdomain of the form X.uniswap.eth. Modifications of the Change Date should be made via v3-core-license-date.uniswap.eth, and Additional Use Grants should be specified at v3-core-license-grants.uniswap.eth. The process for associating text with a subdomain is detailed below:
+
+1. If the subdomain does not already exist (which can be [checked here](https://app.ens.domains/name/uniswap.eth/subdomains)), the [`setSubnodeRecord`](https://docs.ens.domains/contract-api-reference/ens#set-subdomain-record) function of the ENS registry should be called with the following arguments:
+
+- `node`: `namehash('uniswap.eth')`
+- `label`: `keccak256('v3-core-license-date')` or `keccak256('v3-core-license-grants')`
+- `owner`: [`0x1a9C8182C09F50C8318d769245beA52c32BE35BC`](https://etherscan.io/address/0x1a9c8182c09f50c8318d769245bea52c32be35bc), the Uniswap Governance Timelock
+- `resolver`: [`0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41`](https://etherscan.io/address/0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41), the public ENS resolver.
+- `ttl`: `0`
+
+2. Then, the [`setText`](https://docs.ens.domains/contract-api-reference/publicresolver#set-text-data) function of the public resolver should be called with the following arguments:
+
+- `node`: `namehash('v3-core-license-date.uniswap.eth')` or `namehash('v3-core-license-grants.uniswap.eth')`
+- `key`: A suitable label, such as `notice`.
+- `value`: The text of the change. If text already exists (which can be checked via [`text`](https://docs.ens.domains/contract-api-reference/publicresolver#get-text-data)), it may be appended to.
+
+Note that [`setContentHash`](https://docs.ens.domains/contract-api-reference/publicresolver#set-content-hash) may also be used to associate text with a subdomain.
 
 ## Usage
 

@@ -22,6 +22,8 @@ License changes must be enacted by the [ENS domain](https://ens.domains/) uniswa
 - `key`: A suitable label, such as `notice`.
 - `value`: The text of the change. If text already exists (which can be checked via [`text`](https://docs.ens.domains/contract-api-reference/publicresolver#get-text-data)), it may be appended to.
 
+Note that [`setContentHash`](https://docs.ens.domains/contract-api-reference/publicresolver#set-content-hash) may also be used to associate text with a subdomain.
+
 ## Usage
 
 This package vends a CLI for executing a deployment script that results in a full deployment of Uniswap Protocol v3.

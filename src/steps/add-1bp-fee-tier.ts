@@ -20,7 +20,7 @@ export const ADD_1BP_FEE_TIER: MigrationStep = async (state, { signer, gasPrice 
 
   return [
     {
-      message: `UniswapV3Factory added a new fee tier ${ONE_BP_FEE/100} bps with tick spacing ${ONE_BP_TICK_SPACING}`,
+      message: `UniswapV3Factory added a new fee tier ${ONE_BP_FEE / 100} bps with tick spacing ${ONE_BP_TICK_SPACING}`,
       hash: tx.hash,
     },
   ]

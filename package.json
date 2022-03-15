@@ -1,6 +1,6 @@
 {
   "name": "@uniswap/deploy-v3",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Deploy Uniswap V3 smart contracts",
   "bin": "dist/index.js",
   "publishConfig": {

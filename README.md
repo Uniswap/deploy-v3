@@ -47,7 +47,13 @@ only mines blocks when the transactions is queued (e.g. a local testnet), you mu
 
 To run unit tests, run `yarn test`.
 
+To define environment variables, run `cp deploy.sh.example private/deploy.sh`.
+
+If using Node version lower than 17, comment `export NODE_OPTIONS=--openssl-legacy-provider` in `private/deploy.sh`.
+
 For testing the script, run `yarn start`.
+
+To start from environment variables after successful build, run `./private/deploy.sh`.
 
 To publish the script, first create a version: `npm version <version identifier>`, then publish via `npm publish`.
 Don't forget to push your tagged commit!

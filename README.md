@@ -43,7 +43,7 @@ we have used the `@nomiclabs/hardhat-etherscan` hardhat plugin in the individual
 Note that in between deployment steps, the script waits for confirmations. By default, this is set to `2`. If the network
 only mines blocks when the transactions is queued (e.g. a local testnet), you must set confirmations to `0`.
 
-## Development
+## Deployment
 
 To run unit tests, run `yarn test`.
 

@@ -15,6 +15,7 @@ import { DEPLOY_V3_CORE_FACTORY } from './steps/deploy-v3-core-factory'
 import { DEPLOY_V3_MIGRATOR } from './steps/deploy-v3-migrator'
 import { DEPLOY_V3_STAKER } from './steps/deploy-v3-staker'
 import { DEPLOY_V3_SWAP_ROUTER_02 } from './steps/deploy-v3-swap-router-02'
+import { DEPLOY_V3_SWAP_ROUTER_03 } from './steps/deploy-v3-swap-router-03'
 import { TRANSFER_PROXY_ADMIN } from './steps/transfer-proxy-admin'
 import { TRANSFER_V3_CORE_FACTORY_OWNER } from './steps/transfer-v3-core-factory-owner'
 
@@ -34,6 +35,7 @@ const MIGRATION_STEPS: MigrationStep[] = [
   DEPLOY_V3_STAKER,
   DEPLOY_QUOTER_V2,
   DEPLOY_V3_SWAP_ROUTER_02,
+  DEPLOY_V3_SWAP_ROUTER_03,
   TRANSFER_PROXY_ADMIN,
 ]
 

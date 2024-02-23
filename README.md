@@ -38,7 +38,7 @@ As of `v1.0.3` the arguments are:
 Usage: npx @uniswap/deploy-v3 [options]
 
 Options:
-  -pk, --private-key <string>               Private key used to deploy all contracts
+  -pk, --private-key <string>               Private key used to deploy all contracts (in the form 0xe9873d...)
   -j, --json-rpc <url>                      JSON RPC URL where the program should be deployed
   -w9, --weth9-address <address>            Address of the WETH9 contract on this chain
   -ncl, --native-currency-label <string>    Native currency label, e.g. ETH

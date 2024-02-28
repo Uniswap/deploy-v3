@@ -9,7 +9,7 @@ import { MigrationState, StepOutput } from './src/migrations'
 import { asciiStringToBytes32 } from './src/util/asciiStringToBytes32'
 import { version } from './package.json'
 
-const program = new Command();
+const program = new Command()
 
 program
   .requiredOption('-pk, --private-key <string>', 'Private key used to deploy all contracts')
@@ -18,7 +18,7 @@ program
   .requiredOption('-ncl, --native-currency-label <string>', 'Native currency label, e.g. ETH')
   .requiredOption(
     '-o, --owner-address <address>',
-    'Contract address that will own the deployed artifacts after the script runs'
+    'Contract address that will own the deployed artifacts after the script runs',
   )
   .option('-s, --state <path>', 'Path to the JSON file containing the migrations state (optional)', './state.json')
   .option('-v2, --v2-core-factory-address <address>', 'The V2 core factory address used in the swap router (optional)')
@@ -32,7 +32,7 @@ async function action(options: any) {
     console.error('Invalid private key!')
     process.exit(1)
   }
-  
+
   let url: URL
   try {
     url = new URL(options.jsonRpc)
@@ -40,7 +40,7 @@ async function action(options: any) {
     console.error('Invalid JSON RPC URL', (error as Error).message)
     process.exit(1)
   }
-  
+
   let gasPrice: number | undefined
   try {
     gasPrice = options.gasPrice ? parseInt(options.gasPrice) : undefined
@@ -48,7 +48,7 @@ async function action(options: any) {
     console.error('Failed to parse gas price', (error as Error).message)
     process.exit(1)
   }
-  
+
   let confirmations: number
   try {
     confirmations = parseInt(options.confirmations)
@@ -56,7 +56,7 @@ async function action(options: any) {
     console.error('Failed to parse confirmations', (error as Error).message)
     process.exit(1)
   }
-  
+
   let nativeCurrencyLabelBytes: string
   try {
     nativeCurrencyLabelBytes = asciiStringToBytes32(options.nativeCurrencyLabel)
@@ -64,7 +64,7 @@ async function action(options: any) {
     console.error('Invalid native currency label', (error as Error).message)
     process.exit(1)
   }
-  
+
   let weth9Address: string
   try {
     weth9Address = getAddress(options.weth9Address)
@@ -72,7 +72,7 @@ async function action(options: any) {
     console.error('Invalid WETH9 address', (error as Error).message)
     process.exit(1)
   }
-  
+
   let v2CoreFactoryAddress: string
   if (typeof options.v2CoreFactoryAddress === 'undefined') {
     v2CoreFactoryAddress = AddressZero
@@ -84,7 +84,7 @@ async function action(options: any) {
       process.exit(1)
     }
   }
-  
+
   let ownerAddress: string
   try {
     ownerAddress = getAddress(options.ownerAddress)
@@ -92,9 +92,9 @@ async function action(options: any) {
     console.error('Invalid owner address', (error as Error).message)
     process.exit(1)
   }
-  
+
   const wallet = new Wallet(options.privateKey, new JsonRpcProvider({ url: url.href }))
-  
+
   let state: MigrationState
   if (fs.existsSync(options.state)) {
     try {
@@ -106,7 +106,7 @@ async function action(options: any) {
   } else {
     state = {}
   }
-  
+
   let finalState: MigrationState
   const onStateChange = async (newState: MigrationState): Promise<void> => {
     fs.writeFileSync(options.state, JSON.stringify(newState, null, 2))
@@ -126,25 +126,23 @@ async function action(options: any) {
       initialState: state,
       onStateChange,
     })
-  
+
     for await (const result of generator) {
       console.log(`Step ${step++} complete`, result)
       results.push(result)
-  
+
       // wait 15 minutes for any transactions sent in the step
       await Promise.all(
-        result.map(
-          (stepResult): Promise<TransactionReceipt | true> => {
-            if (stepResult.hash) {
-              return wallet.provider.waitForTransaction(stepResult.hash, confirmations, /* 15 minutes */ 1000 * 60 * 15)
-            } else {
-              return Promise.resolve(true)
-            }
+        result.map((stepResult): Promise<TransactionReceipt | true> => {
+          if (stepResult.hash) {
+            return wallet.provider.waitForTransaction(stepResult.hash, confirmations, /* 15 minutes */ 1000 * 60 * 15)
+          } else {
+            return Promise.resolve(true)
           }
-        )
+        }),
       )
     }
-  
+
     return results
   }
 

@@ -8,7 +8,7 @@ export default function linkLibraries(
     bytecode: string
     linkReferences: { [fileName: string]: { [contractName: string]: { length: number; start: number }[] } }
   },
-  libraries: { [libraryName: string]: string }
+  libraries: { [libraryName: string]: string },
 ): string {
   Object.keys(linkReferences).forEach((fileName) => {
     Object.keys(linkReferences[fileName]).forEach((contractName) => {

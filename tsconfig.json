@@ -17,7 +17,7 @@
     "strictBindCallApply": true,
     "strictPropertyInitialization": true,
     "noImplicitThis": true,
-    "alwaysStrict": true,
+    "alwaysStrict": true
   },
   "include": ["./scripts", "./test"],
   "files": ["./hardhat.config.ts"]

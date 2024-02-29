@@ -35,7 +35,7 @@ export default function createDeployContractStep({
         linkReferences && computeLibraries
           ? linkLibraries({ bytecode, linkReferences }, computeLibraries(state, config))
           : bytecode,
-        config.signer
+        config.signer,
       )
 
       let contract: Contract

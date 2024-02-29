@@ -28,12 +28,12 @@ async function getPoolData(poolContract: Contract) {
 }
 
 async function main() {
-  if (network.name !== "arbitrumSepolia") {
-    console.warn("This script is only for arbitrum sepolia netework");
-    return;
+  if (network.name !== 'arbitrumSepolia') {
+    console.warn('This script is only for arbitrum sepolia netework')
+    return
   }
 
-  const [signer] = await ethers.getSigners();
+  const [signer] = await ethers.getSigners()
 
   // ================= Deploy Weth/Usdc pool =================== //
   const wethAddress = "0x0133Ff8B0eA9f22e510ff3A8B245aa863b2Eb13F";
@@ -111,6 +111,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+  console.error(error)
+  process.exitCode = 1
+})

@@ -10,8 +10,9 @@ contract UniV3Rebalancer is IExternalCallee {
     struct RebalanceData {
         address[] tokens;
         int256[] deltas;
-        uint256[] amountsMin;
+        uint256[] amountsLimit;
         uint24 poolFee;
+        uint160 sqrtPriceLimit;
         uint256 deadline;
     }
 
@@ -44,14 +45,14 @@ contract UniV3Rebalancer is IExternalCallee {
                     recipient: address(this),
                     deadline: data.deadline,
                     amountOut: uint256(deltas[activeIndex]),
-                    amountInMaximum: type(uint256).max,
-                    sqrtPriceLimitX96: 0
+                    amountInMaximum: data.amountsLimit[1 - activeIndex],
+                    sqrtPriceLimitX96: data.sqrtPriceLimit
                 });
             ISwapRouter(swapRouter).exactOutputSingle(params);
 
             require(
                 IERC20(data.tokens[activeIndex]).balanceOf(address(this)) >=
-                uint256(amounts[activeIndex]) + data.amountsMin[activeIndex],
+                uint256(amounts[activeIndex]) + uint256(deltas[activeIndex]),
                 "UniV3Rebalancer: Min Amount"
             );
         } else if (deltas[0] < 0 || deltas[1] < 0) {
@@ -67,14 +68,14 @@ contract UniV3Rebalancer is IExternalCallee {
                     recipient: address(this),
                     deadline: data.deadline,
                     amountIn: uint256(-deltas[activeIndex]),
-                    amountOutMinimum: data.amountsMin[1 - activeIndex],
-                    sqrtPriceLimitX96: 0
+                    amountOutMinimum: data.amountsLimit[1 - activeIndex],
+                    sqrtPriceLimitX96: data.sqrtPriceLimit
                 });
             ISwapRouter(swapRouter).exactInputSingle(params);
 
             require(
                 IERC20(data.tokens[1 - activeIndex]).balanceOf(address(this)) >=
-                uint256(amounts[1 - activeIndex]) + data.amountsMin[1 - activeIndex],
+                uint256(amounts[1 - activeIndex]) + data.amountsLimit[1 - activeIndex],
                 "UniV3Rebalancer: Min Amount"
             );
         }

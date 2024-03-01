@@ -42,7 +42,7 @@ async function main() {
   const usdcContract = new Contract(usdcAddress, ERC20ABI, signer)
 
   const feeTier = 10000
-  const price = encodePriceSqrt(3000 * (10**6), 1 * (10**18));
+  const price = encodePriceSqrt(3000 * 10 ** 6, 1 * 10 ** 18)
 
   const factory = new Contract(Univ3Addresses.v3CoreFactoryAddress, UniswapV3Factory.abi, signer)
   const positionManager = new Contract(

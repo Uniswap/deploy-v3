@@ -119,3 +119,6 @@ dist
 # solidity-coverage files
 /coverage
 /coverage.json
+
+/out
+/cache_forge

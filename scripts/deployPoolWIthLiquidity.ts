@@ -58,7 +58,7 @@ async function main() {
 
   // ================= Add Liquidity =================== //
   const poolContract = new ethers.Contract(poolAddress, UniswapV3Pool.abi, signer)
-  const LIQUIDITY = ethers.parseEther('0.0001')
+  const LIQUIDITY = ethers.parseEther('0.01')
   const DEADLINE = Math.floor(Date.now() / 1000) + 60 * 10
 
   const WethToken = new Token(network.config.chainId!, wethAddress, 18, 'WETH', 'Wrapped Ether')
@@ -68,11 +68,11 @@ async function main() {
   console.log(poolData)
   /*
   {
-    tickSpacing: 10n,
-    fee: 500n,
+    tickSpacing: 200n,
+    fee: 10000n,
     liquidity: 0n,
-    sqrtPriceX96: 3543191142285914205922034323214n,
-    tick: 76012n
+    sqrtPriceX96: 4339505179874779489431521n,
+    tick: -196257n
   }
   */
 
@@ -88,6 +88,8 @@ async function main() {
     nearestUsableTick(Number(poolData.tick), Number(poolData.tickSpacing)) - Number(poolData.tickSpacing) * 100
   const tickUpper =
     nearestUsableTick(Number(poolData.tick), Number(poolData.tickSpacing)) + Number(poolData.tickSpacing) * 100
+
+  console.log("TICKS", tickLower, tickUpper)
   const position = new Position({
     pool,
     liquidity: LIQUIDITY.toString(),

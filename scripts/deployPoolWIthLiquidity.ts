@@ -89,7 +89,7 @@ async function main() {
   const tickUpper =
     nearestUsableTick(Number(poolData.tick), Number(poolData.tickSpacing)) + Number(poolData.tickSpacing) * 100
 
-  console.log("TICKS", tickLower, tickUpper)
+  console.log('TICKS', tickLower, tickUpper)
   const position = new Position({
     pool,
     liquidity: LIQUIDITY.toString(),

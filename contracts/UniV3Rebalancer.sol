@@ -14,7 +14,10 @@ contract UniV3Rebalancer is IExternalCallee {
         uint24 poolFee;
         uint160 sqrtPriceLimit;
         uint256 deadline;
+        uint256 tokenId;
     }
+
+    event ExternalRebalanceSwap(address indexed sender, address indexed caller, uint256 indexed tokenId, address tokenIn, address tokenOut, uint24 poolFee, uint256 amountIn, uint256 amountOut, bool isBuy);
 
     address public immutable swapRouter;
 
@@ -28,9 +31,11 @@ contract UniV3Rebalancer is IExternalCallee {
         RebalanceData memory data = abi.decode(_data, (RebalanceData));
         int256[] memory deltas = data.deltas;
 
-        require(IERC20(data.tokens[0]).balanceOf(address(this)) == uint256(amounts[0]), "UniV3Rebalancer: Invalid token amount");
-        require(IERC20(data.tokens[1]).balanceOf(address(this)) == uint256(amounts[1]), "UniV3Rebalancer: Invalid token amount");
+        require(IERC20(data.tokens[0]).balanceOf(address(this)) >= uint256(amounts[0]), "UniV3Rebalancer: Invalid token amount");
+        require(IERC20(data.tokens[1]).balanceOf(address(this)) >= uint256(amounts[1]), "UniV3Rebalancer: Invalid token amount");
         require((deltas[0] * deltas[1] == 0) && (deltas[0] + deltas[1] != 0), "UniV3Rebalancer: Invalid deltas");
+
+        address caller = msg.sender;
 
         if (deltas[0] > 0 || deltas[1] > 0) {
             uint256 activeIndex = deltas[0] > 0 ? 0 : 1;
@@ -48,13 +53,9 @@ contract UniV3Rebalancer is IExternalCallee {
                     amountInMaximum: data.amountsLimit[1 - activeIndex],
                     sqrtPriceLimitX96: data.sqrtPriceLimit
                 });
-            ISwapRouter(swapRouter).exactOutputSingle(params);
+            uint256 amountIn = ISwapRouter(swapRouter).exactOutputSingle(params);
 
-            require(
-                IERC20(data.tokens[activeIndex]).balanceOf(address(this)) >=
-                uint256(amounts[activeIndex]) + uint256(deltas[activeIndex]),
-                "UniV3Rebalancer: Min Amount"
-            );
+            emit ExternalRebalanceSwap(sender, caller, data.tokenId, params.tokenIn, params.tokenOut, params.fee, amountIn, params.amountOut, true);
         } else if (deltas[0] < 0 || deltas[1] < 0) {
             uint256 activeIndex = deltas[0] < 0 ? 0 : 1;
 
@@ -71,16 +72,11 @@ contract UniV3Rebalancer is IExternalCallee {
                     amountOutMinimum: data.amountsLimit[1 - activeIndex],
                     sqrtPriceLimitX96: data.sqrtPriceLimit
                 });
-            ISwapRouter(swapRouter).exactInputSingle(params);
+            uint256 amountOut = ISwapRouter(swapRouter).exactInputSingle(params);
 
-            require(
-                IERC20(data.tokens[1 - activeIndex]).balanceOf(address(this)) >=
-                uint256(amounts[1 - activeIndex]) + data.amountsLimit[1 - activeIndex],
-                "UniV3Rebalancer: Min Amount"
-            );
+            emit ExternalRebalanceSwap(sender, caller, data.tokenId, params.tokenIn, params.tokenOut, params.fee, params.amountIn, amountOut, false);
         }
 
-        address caller = msg.sender;
         for (uint256 i = 0; i < data.tokens.length; i ++) {
             uint256 balance = IERC20(data.tokens[i]).balanceOf(address(this));
             if (balance > 0) {

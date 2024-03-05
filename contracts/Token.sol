@@ -13,6 +13,14 @@ contract Token is ERC20 {
         _decimals = decimals_;
     }
 
+    function name() public view override returns (string memory) {
+        return _name;
+    }
+
+    function symbol() public view override returns (string memory) {
+        return _symbol;
+    }
+
     function decimals() public view override returns (uint8) {
         return _decimals;
     }

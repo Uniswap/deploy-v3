@@ -37,10 +37,7 @@ contract UniV3RebalanerFuzz is TestBed {
         } else {
             amountsLimit[0] = isBuy ? type(uint256).max : 0;
         }
-        console.log("DELTAS:");
-        console.logInt(deltas[0]);
-        console.logInt(deltas[1]);
-        console.log("AMOUNTS LIMIT", amountsLimit[0], amountsLimit[1]);
+
         UniV3Rebalancer.RebalanceData memory data = UniV3Rebalancer.RebalanceData({
             tokens: tokens,
             deltas: deltas,
@@ -80,5 +77,12 @@ contract UniV3RebalanerFuzz is TestBed {
 
         assertGt(weth.balanceOf(address(this)), 0);
         assertGt(usdc.balanceOf(address(this)), 0);
+        if (isBuy) {
+            if (isToken0) {
+                assertGt(weth.balanceOf(address(this)), delta);
+            } else {
+                assertGt(usdc.balanceOf(address(this)), delta);
+            }
+        }
     }
 }

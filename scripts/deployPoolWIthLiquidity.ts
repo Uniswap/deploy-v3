@@ -88,8 +88,8 @@ async function main() {
     nearestUsableTick(Number(poolData.tick), Number(poolData.tickSpacing)) - Number(poolData.tickSpacing) * 100
   const tickUpper =
     nearestUsableTick(Number(poolData.tick), Number(poolData.tickSpacing)) + Number(poolData.tickSpacing) * 100
-  
-  console.log("TICK LIMITS", TickMath.MAX_TICK, TickMath.MIN_TICK);
+
+  console.log('TICK LIMITS', TickMath.MAX_TICK, TickMath.MIN_TICK)
   console.log('TICKS', tickLower, tickUpper)
   const position = new Position({
     pool,

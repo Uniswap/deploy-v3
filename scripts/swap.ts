@@ -19,7 +19,7 @@ async function main() {
   const wethContract = new Contract(wethAddress, ERC20ABI, signer)
   const usdcContract = new Contract(usdcAddress, ERC20ABI, signer)
 
-  await usdcContract.approve(Univ3Addresses.swapRouter02, ethers.MaxUint256);
+  await usdcContract.approve(Univ3Addresses.swapRouter02, ethers.MaxUint256)
 
   const params = {
     tokenIn: usdcAddress,
@@ -29,11 +29,11 @@ async function main() {
     deadline: Math.floor(Date.now() / 1000) + 60 * 10,
     amountOut: ethers.parseEther('0.1'),
     amountInMaximum: ethers.parseUnits('1000', 6),
-    sqrtPriceLimitX96: 0
+    sqrtPriceLimitX96: 0,
   }
-  const tx = await swapRouter.exactOutputSingle(params);
-  await tx.wait();
-  console.log("DONE!");
+  const tx = await swapRouter.exactOutputSingle(params)
+  await tx.wait()
+  console.log('DONE!')
 }
 
 main().catch((error) => {

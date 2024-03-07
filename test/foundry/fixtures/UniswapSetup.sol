@@ -5,7 +5,6 @@ import "forge-std/Test.sol";
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Factory.sol";
 import "@uniswap/v3-core/contracts/interfaces/IUniswapV3Pool.sol";
 import "@uniswap/v3-periphery/contracts/interfaces/IPoolInitializer.sol";
-import "@uniswap/v3-periphery/contracts/interfaces/ISwapRouter.sol";
 
 import "../../../contracts/interfaces/IPositionManagerMintable.sol";
 import "./TokensSetup.sol";
@@ -13,7 +12,6 @@ import "./TokensSetup.sol";
 contract UniswapSetup is TokensSetup {
     IUniswapV3Factory public uniFactory;
     IUniswapV3Pool public wethUsdcPool;
-    ISwapRouter public swapRouter;
 
     uint24 public immutable poolFee = 10000;    // fee 1%
     uint160 public immutable sqrtPriceX96 = 4339505179874779489431521;  // 1 WETH = 3000 USDC
@@ -43,11 +41,6 @@ contract UniswapSetup is TokensSetup {
             nftPositionManager := create(0, add(nftPositionManagerBytecode, 0x20), mload(nftPositionManagerBytecode))
         }
 
-        bytes memory swapRouterBytecode = abi.encodePacked(vm.getCode("./node_modules/@uniswap/swap-router-contracts/artifacts/contracts/SwapRouter02.sol/SwapRouter02.json"), abi.encode(address(0), address(uniFactory), nftPositionManager, address(weth)));
-        assembly {
-            sstore(swapRouter.slot, create(0, add(swapRouterBytecode, 0x20), mload(swapRouterBytecode)))
-        }
-
         // Deploy Weth/Usdc pool
         wethUsdcPool = IUniswapV3Pool(
             IPoolInitializer(nftPositionManager).createAndInitializePoolIfNecessary(address(weth), address(usdc), poolFee, sqrtPriceX96)
@@ -63,8 +56,10 @@ contract UniswapSetup is TokensSetup {
             token0: address(weth),
             token1: address(usdc),
             fee: poolFee,
-            tickLower: -216200,
-            tickUpper: -176200,
+            tickLower: -887200,
+            tickUpper: 887200,
+            // tickLower: -216200,
+            // tickUpper: -176200,
             amount0Desired: 115594502247137145239,  // 115.5 WETH
             amount1Desired: 345648123455,   // 345648 USDC
             amount0Min: 0,

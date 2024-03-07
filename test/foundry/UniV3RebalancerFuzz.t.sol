@@ -9,10 +9,11 @@ contract UniV3RebalanerFuzz is TestBed {
 
     function setUp() public {
         initSetup();
-        rebalancer = new UniV3Rebalancer(address(swapRouter));
+        rebalancer = new UniV3Rebalancer(address(uniFactory), address(weth));
     }
 
     function testStates() public {
+        console.log("@@@", wethUsdcPool.token0(), wethUsdcPool.token1());
         assertGt(weth.balanceOf(address(wethUsdcPool)), 100 * 1e18);
         assertGt(usdc.balanceOf(address(wethUsdcPool)), 300000 * 1e6);
     }
@@ -22,7 +23,7 @@ contract UniV3RebalanerFuzz is TestBed {
         tokens[0] = address(weth);
         tokens[1] = address(usdc);
         int256[] memory deltas = new int256[](2);
-        deltas[0] = 1e18;   // buy 1 WETH
+        deltas[0] = 100;   // buy 1 WETH
         uint256[] memory amountsLimit = new uint256[](2);
         amountsLimit[1] = 3200e6;   // max spend 3200 usdc
         UniV3Rebalancer.RebalanceData memory data = UniV3Rebalancer.RebalanceData({

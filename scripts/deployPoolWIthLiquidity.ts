@@ -58,7 +58,7 @@ async function main() {
 
   // ================= Add Liquidity =================== //
   const poolContract = new ethers.Contract(poolAddress, UniswapV3Pool.abi, signer)
-  const LIQUIDITY = ethers.parseEther('0.01')
+  const LIQUIDITY = ethers.parseEther('0.001')
   const DEADLINE = Math.floor(Date.now() / 1000) + 60 * 10
 
   const WethToken = new Token(network.config.chainId!, wethAddress, 18, 'WETH', 'Wrapped Ether')
@@ -88,7 +88,8 @@ async function main() {
     nearestUsableTick(Number(poolData.tick), Number(poolData.tickSpacing)) - Number(poolData.tickSpacing) * 100
   const tickUpper =
     nearestUsableTick(Number(poolData.tick), Number(poolData.tickSpacing)) + Number(poolData.tickSpacing) * 100
-
+  
+  console.log("TICK LIMITS", TickMath.MAX_TICK, TickMath.MIN_TICK);
   console.log('TICKS', tickLower, tickUpper)
   const position = new Position({
     pool,
@@ -103,7 +104,7 @@ async function main() {
   const { amount0: amount0Desired, amount1: amount1Desired } = position.mintAmounts
   console.log(await wethContract.balanceOf(signer.address), await usdcContract.balanceOf(signer.address))
   console.log(amount0Desired.toString(), amount1Desired.toString())
-  return
+
   const tx = await positionManager.mint(
     {
       token0: wethAddress,

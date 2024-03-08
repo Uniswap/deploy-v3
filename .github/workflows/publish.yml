@@ -1,0 +1,29 @@
+name: Publish
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish-gpr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: https://npm.pkg.github.com/
+          scope: '@gammaswap'
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+      - run: yarn install
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GS_TOKEN}}
+      - run: yarn run test
+      - run: yarn run fuzz
+      - name: Publish Package
+        if: "(contains(github.event.head_commit.message, 'publish package'))"
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.GS_TOKEN}}

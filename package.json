@@ -1,11 +1,7 @@
 {
-  "name": "@gammaswap/deploy-v3",
-  "version": "1.0.5",
-  "description": "Deploy Uniswap V3 smart contracts",
-  "bin": "dist/index.js",
-  "publishConfig": {
-    "access": "restricted"
-  },
+  "name": "@gammaswap/univ3-rebalancer",
+  "version": "1.0.0",
+  "description": "Uniswap V3 rebalancer smart contracts for gammaswap",
   "main": "dist/index.js",
   "scripts": {
     "test": "mocha",
@@ -14,10 +10,13 @@
     "prestart": "yarn build",
     "start": "node dist/index.js",
     "prepublishOnly": "yarn build",
+    "fuzz": "forge test",
     "deploy": "ts-node index.ts"
   },
   "files": [
-    "dist/"
+    "dist",
+    "contracts",
+    "artifacts"
   ],
   "engines": {
     "node": ">=18"
@@ -30,7 +29,7 @@
     "name": "GammaSwap Labs",
     "url": "https://gammaswap.com"
   },
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "homepage": "https://gammaswap.com",
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",

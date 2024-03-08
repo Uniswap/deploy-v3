@@ -13,7 +13,7 @@ export async function* migrate<S, C, O>({
   config: C
   steps: GenericMigrationStep<S, C, O>[]
 }): AsyncGenerator<O, void, void> {
-  const mutableState: Draft<S> = createDraft(initialState)
+  const mutableState: Draft<S> = createDraft<any>(initialState)
 
   for (let i = 0; i < steps.length; i++) {
     const output = await steps[i](mutableState, config)

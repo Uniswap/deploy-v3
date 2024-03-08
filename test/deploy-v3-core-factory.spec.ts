@@ -36,8 +36,8 @@ describe('deploy-v3-core-factory', () => {
             v2CoreFactoryAddress: DUMMY_ADDRESS,
             weth9Address: DUMMY_ADDRESS,
             nativeCurrencyLabelBytes: asciiStringToBytes32('ETH'),
-          }
-        )
+          },
+        ),
       )
       expect(result.message).to.eq('Contract UniswapV3Factory deployed')
     })
@@ -53,8 +53,8 @@ describe('deploy-v3-core-factory', () => {
             v2CoreFactoryAddress: DUMMY_ADDRESS,
             weth9Address: DUMMY_ADDRESS,
             nativeCurrencyLabelBytes: asciiStringToBytes32('ETH'),
-          }
-        )
+          },
+        ),
       )
       expect(result.message).to.eq('Contract UniswapV3Factory was already deployed')
       expect(result.address).to.eq(DUMMY_ADDRESS)
@@ -73,8 +73,8 @@ describe('deploy-v3-core-factory', () => {
               v2CoreFactoryAddress: DUMMY_ADDRESS,
               weth9Address: DUMMY_ADDRESS,
               nativeCurrencyLabelBytes: asciiStringToBytes32('ETH'),
-            }
-          )
+            },
+          ),
         )
         v3CoreFactory = new Contract(result.address!, UniswapV3Factory.abi, provider)
       })

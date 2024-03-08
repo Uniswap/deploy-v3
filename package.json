@@ -13,10 +13,15 @@
     "fuzz": "forge test",
     "deploy": "ts-node index.ts"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@gammaswap"
+  },
   "files": [
     "dist",
     "contracts",
-    "artifacts"
+    "artifacts",
+    "typechain",
+    "typechain-types"
   ],
   "engines": {
     "node": ">=18"

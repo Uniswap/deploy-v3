@@ -1,9 +1,10 @@
 {
   "name": "@gammaswap/univ3-rebalancer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Uniswap V3 rebalancer smart contracts for gammaswap",
   "scripts": {
     "test": "mocha",
+    "compile": "npx hardhat compile",
     "fuzz": "forge test",
     "deploy": "ts-node index.ts"
   },

@@ -21,6 +21,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{secrets.GS_TOKEN}}
       - run: yarn run test
+      - run: yarn run compile
       - run: yarn run fuzz
       - name: Publish Package
         if: "(contains(github.event.head_commit.message, 'publish package'))"

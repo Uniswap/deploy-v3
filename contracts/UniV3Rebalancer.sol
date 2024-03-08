@@ -14,8 +14,6 @@ import "./libraries/PoolAddress.sol";
 import "./libraries/CallbackValidation.sol";
 import "./libraries/TickMath.sol";
 
-import "forge-std/Test.sol";
-
 contract UniV3Rebalancer is IExternalCallee, ISwapRouter {
     using Path for bytes;
 
@@ -76,7 +74,7 @@ contract UniV3Rebalancer is IExternalCallee, ISwapRouter {
             amount0Delta > 0
                 ? (tokenIn < tokenOut, uint256(amount0Delta))
                 : (tokenOut < tokenIn, uint256(amount1Delta));
-        console.log("@@@", address(this), data.payer, amountToPay);
+
         if (isExactInput) {
             pay(tokenIn, data.payer, msg.sender, amountToPay);
         } else {

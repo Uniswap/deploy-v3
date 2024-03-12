@@ -26,14 +26,14 @@ const config: HardhatUserConfig = {
     arbitrum: {
       url: `https://arb-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_ARBITRUM_API_KEY}`,
       accounts: {
-        mnemonic: process.env.MNEMONIC || '',
+        mnemonic: process.env.ARBITRUM_MNEMONIC || '',
       },
       chainId: 42161,
     },
     arbitrumSepolia: {
       url: `https://arb-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_ARBITRUM_SEPOLIA_API_KEY}`,
       accounts: {
-        mnemonic: process.env.MNEMONIC || '',
+        mnemonic: process.env.ARBITRUM_SEPOLIA_MNEMONIC || '',
       },
       chainId: 421614,
     },

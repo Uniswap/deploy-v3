@@ -122,3 +122,6 @@ dist
 
 /out
 /cache_forge
+
+# IDE
+/.idea

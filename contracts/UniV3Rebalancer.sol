@@ -133,7 +133,7 @@ contract UniV3Rebalancer is IExternalCallee, ISwapRouter {
         uint128[] calldata amounts,
         uint256 lpTokens,
         bytes calldata _data
-    ) external {
+    ) external override {
         require(lpTokens == 0, "UniV3Rebalancer: Invalid deposit");
 
         RebalanceData memory data = abi.decode(_data, (RebalanceData));

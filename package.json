@@ -1,6 +1,6 @@
 {
   "name": "@gammaswap/univ3-rebalancer",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Uniswap V3 rebalancer smart contracts for gammaswap",
   "scripts": {
     "test": "mocha",

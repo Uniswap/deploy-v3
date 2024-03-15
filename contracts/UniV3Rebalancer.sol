@@ -13,6 +13,7 @@ import "./libraries/Path.sol";
 import "./libraries/PoolAddress.sol";
 import "./libraries/CallbackValidation.sol";
 import "./libraries/TickMath.sol";
+import "forge-std/Test.sol";
 
 contract UniV3Rebalancer is IExternalCallee, ISwapRouter {
     using Path for bytes;
@@ -25,7 +26,20 @@ contract UniV3Rebalancer is IExternalCallee, ISwapRouter {
         uint160 sqrtPriceLimit;
         uint256 deadline;
         uint256 tokenId;
+        bytes path;
     }
+
+    event ExternalRebalanceSingleSwap(
+        address indexed sender,
+        address indexed caller,
+        uint256 indexed tokenId,
+        address tokenIn,
+        address tokenOut,
+        uint24 poolFee,
+        uint256 amountIn,
+        uint256 amountOut,
+        bool isBuy
+    );
 
     event ExternalRebalanceSwap(
         address indexed sender,
@@ -33,7 +47,6 @@ contract UniV3Rebalancer is IExternalCallee, ISwapRouter {
         uint256 indexed tokenId,
         address tokenIn,
         address tokenOut,
-        uint24 poolFee,
         uint256 amountIn,
         uint256 amountOut,
         bool isBuy
@@ -81,7 +94,8 @@ contract UniV3Rebalancer is IExternalCallee, ISwapRouter {
             // either initiate the next swap or pay
             if (data.path.hasMultiplePools()) {
                 data.path = data.path.skipToken();
-                exactOutputInternal(amountToPay, msg.sender, 0, data);
+                exactOutputInternal(amountToPay, address(this), 0, data);
+                // exactOutputInternal(amountToPay, msg.sender, 0, data);
             } else {
                 amountInCached = amountToPay;
                 tokenIn = tokenOut; // swap in/out because exact output swaps are reversed
@@ -108,6 +122,42 @@ contract UniV3Rebalancer is IExternalCallee, ISwapRouter {
     }
 
     /// @inheritdoc ISwapRouter
+    function exactInput(ExactInputParams memory params)
+        public
+        payable
+        override
+        returns (uint256 amountOut)
+    {
+        require(block.timestamp <= params.deadline, "Transaction too old");
+        address payer = address(this);
+        console.log("Exact Input");
+        while (true) {
+            bool hasMultiplePools = params.path.hasMultiplePools();
+
+            // the outputs of prior swaps become the inputs to subsequent ones
+            params.amountIn = exactInputInternal(
+                params.amountIn,
+                hasMultiplePools ? address(this) : params.recipient, // for intermediate swaps, this contract custodies
+                0,
+                SwapCallbackData({
+                    path: params.path.getFirstPool(), // only the first pool in the path is necessary
+                    payer: payer
+                })
+            );
+
+            // decide whether to continue or terminate
+            if (hasMultiplePools) {
+                params.path = params.path.skipToken();
+            } else {
+                amountOut = params.amountIn;
+                break;
+            }
+        }
+
+        require(amountOut >= params.amountOutMinimum, "Too little received");
+    }
+
+    /// @inheritdoc ISwapRouter
     function exactOutputSingle(ExactOutputSingleParams memory params)
         public
         payable
@@ -125,6 +175,29 @@ contract UniV3Rebalancer is IExternalCallee, ISwapRouter {
 
         require(amountIn <= params.amountInMaximum, "Too much requested");
         // has to be reset even though we don't use it in the single hop case
+        amountInCached = DEFAULT_AMOUNT_IN_CACHED;
+    }
+
+    /// @inheritdoc ISwapRouter
+    function exactOutput(ExactOutputParams memory params)
+        public
+        payable
+        override
+        returns (uint256 amountIn)
+    {
+        require(block.timestamp <= params.deadline, "Transaction too old");
+        // it's okay that the payer is fixed to msg.sender here, as they're only paying for the "final" exact output
+        // swap, which happens first, and subsequent swaps are paid for within nested callback frames
+        console.log("Exact Output");
+        exactOutputInternal(
+            params.amountOut,
+            params.recipient,
+            0,
+            SwapCallbackData({path: params.path, payer: address(this)})
+        );
+
+        amountIn = amountInCached;
+        require(amountIn <= params.amountInMaximum, "Too much requested");
         amountInCached = DEFAULT_AMOUNT_IN_CACHED;
     }
 
@@ -148,35 +221,65 @@ contract UniV3Rebalancer is IExternalCallee, ISwapRouter {
         if (deltas[0] > 0 || deltas[1] > 0) {
             uint256 activeIndex = deltas[0] > 0 ? 0 : 1;
 
-            ISwapRouter.ExactOutputSingleParams memory params = ISwapRouter.ExactOutputSingleParams({
-                tokenIn: data.tokens[1 - activeIndex],
-                tokenOut: data.tokens[activeIndex],
-                fee: data.poolFee,
-                recipient: address(this),
-                deadline: data.deadline,
-                amountOut: uint256(deltas[activeIndex]),
-                amountInMaximum: data.amountsLimit[1 - activeIndex],
-                sqrtPriceLimitX96: data.sqrtPriceLimit
-            });
-            uint256 amountIn = exactOutputSingle(params);
+            if (data.path.length == 0) {
+                ISwapRouter.ExactOutputSingleParams memory params = ISwapRouter.ExactOutputSingleParams({
+                    tokenIn: data.tokens[1 - activeIndex],
+                    tokenOut: data.tokens[activeIndex],
+                    fee: data.poolFee,
+                    recipient: address(this),
+                    deadline: data.deadline,
+                    amountOut: uint256(deltas[activeIndex]),
+                    amountInMaximum: data.amountsLimit[1 - activeIndex],
+                    sqrtPriceLimitX96: data.sqrtPriceLimit
+                });
+                uint256 amountIn = exactOutputSingle(params);
 
-            emit ExternalRebalanceSwap(sender, caller, data.tokenId, params.tokenIn, params.tokenOut, params.fee, amountIn, params.amountOut, true);
+                emit ExternalRebalanceSingleSwap(sender, caller, data.tokenId, params.tokenIn, params.tokenOut, params.fee, amountIn, params.amountOut, true);
+            } else {
+                ISwapRouter.ExactOutputParams memory params =
+                    ISwapRouter.ExactOutputParams({
+                        path: data.path,
+                        recipient: address(this),
+                        deadline: block.timestamp,
+                        amountOut: uint256(deltas[activeIndex]),
+                        amountInMaximum: data.amountsLimit[1 - activeIndex]
+                    });
+
+                // Executes the swap, returning the amountIn actually spent.
+                uint256 amountIn = exactOutput(params);
+                emit ExternalRebalanceSwap(sender, caller, data.tokenId, data.tokens[1 - activeIndex], data.tokens[activeIndex], amountIn, params.amountOut, true);
+            }
         } else if (deltas[0] < 0 || deltas[1] < 0) {
             uint256 activeIndex = deltas[0] < 0 ? 0 : 1;
 
-            ExactInputSingleParams memory params = ExactInputSingleParams({
-                tokenIn: data.tokens[activeIndex],
-                tokenOut: data.tokens[1 - activeIndex],
-                fee: data.poolFee,
-                recipient: address(this),
-                deadline: data.deadline,
-                amountIn: uint256(-deltas[activeIndex]),
-                amountOutMinimum: data.amountsLimit[1 - activeIndex],
-                sqrtPriceLimitX96: data.sqrtPriceLimit
-            });
-            uint256 amountOut = exactInputSingle(params);
+            if (data.path.length == 0) {
+                ExactInputSingleParams memory params = ExactInputSingleParams({
+                    tokenIn: data.tokens[activeIndex],
+                    tokenOut: data.tokens[1 - activeIndex],
+                    fee: data.poolFee,
+                    recipient: address(this),
+                    deadline: data.deadline,
+                    amountIn: uint256(-deltas[activeIndex]),
+                    amountOutMinimum: data.amountsLimit[1 - activeIndex],
+                    sqrtPriceLimitX96: data.sqrtPriceLimit
+                });
+                uint256 amountOut = exactInputSingle(params);
 
-            emit ExternalRebalanceSwap(sender, caller, data.tokenId, params.tokenIn, params.tokenOut, params.fee, params.amountIn, amountOut, false);
+                emit ExternalRebalanceSingleSwap(sender, caller, data.tokenId, params.tokenIn, params.tokenOut, params.fee, params.amountIn, amountOut, false);
+            } else {
+                ISwapRouter.ExactInputParams memory params =
+                    ISwapRouter.ExactInputParams({
+                        path: data.path,
+                        recipient: address(this),
+                        deadline: block.timestamp,
+                        amountIn: uint256(-deltas[activeIndex]),
+                        amountOutMinimum: data.amountsLimit[1 - activeIndex]
+                    });
+
+                // Executes the swap.
+                uint256 amountOut = exactInput(params);
+                emit ExternalRebalanceSwap(sender, caller, data.tokenId, data.tokens[activeIndex], data.tokens[1 - activeIndex], params.amountIn, amountOut, true);
+            }
         }
 
         for (uint256 i = 0; i < data.tokens.length; i ++) {
@@ -230,7 +333,7 @@ contract UniV3Rebalancer is IExternalCallee, ISwapRouter {
         (address tokenOut, address tokenIn, uint24 fee) = data.path.decodeFirstPool();
 
         bool zeroForOne = tokenIn < tokenOut;
-
+        console.log("************", recipient);
         (int256 amount0Delta, int256 amount1Delta) =
             getPool(tokenIn, tokenOut, fee).swap(
                 recipient,
@@ -241,7 +344,7 @@ contract UniV3Rebalancer is IExternalCallee, ISwapRouter {
                     : sqrtPriceLimitX96,
                 abi.encode(data)
             );
-
+        console.log("=============");
         uint256 amountOutReceived;
         (amountIn, amountOutReceived) = zeroForOne
             ? (uint256(amount0Delta), uint256(-amount1Delta))

@@ -38,10 +38,13 @@ async function main() {
   // ================= Deploy Weth/Usdc pool =================== //
   const wethAddress = '0x0133Ff8B0eA9f22e510ff3A8B245aa863b2Eb13F'
   const usdcAddress = '0x1CE4B22e19FC264F526D12e471312bAb49348Ea5'
+  const usdtAddress = '0x1Be207F7AE412c6Deb0505485a36BFBdBd921D89'
   const wethContract = new Contract(wethAddress, ERC20ABI, signer)
   const usdcContract = new Contract(usdcAddress, ERC20ABI, signer)
+  const usdtContract = new Contract(usdtAddress, ERC20ABI, signer)
 
-  const feeTier = 10000
+  // const feeTier = 10000
+  const feeTier = 500
   const price = encodePriceSqrt(3000 * 10 ** 6, 1 * 10 ** 18)
 
   const factory = new Contract(Univ3Addresses.v3CoreFactoryAddress, UniswapV3Factory.abi, signer)
@@ -51,34 +54,46 @@ async function main() {
     signer,
   )
   // await (await positionManager.createAndInitializePoolIfNecessary(wethAddress, usdcAddress, feeTier, price, { gasLimit: 5000000 })).wait();
+  // await (await positionManager.createAndInitializePoolIfNecessary(wethAddress, usdtAddress, feeTier, price, { gasLimit: 5000000 })).wait();
 
-  const poolAddress = await factory.getPool(wethAddress, usdcAddress, feeTier)
+  // const poolAddress = await factory.getPool(wethAddress, usdcAddress, feeTier)
+  const poolAddress = await factory.getPool(wethAddress, usdtAddress, feeTier)
   console.log('======= SqrtPrice96 =======', price)
   console.log('======= Pool Address =======', poolAddress)
 
   // ================= Add Liquidity =================== //
   const poolContract = new ethers.Contract(poolAddress, UniswapV3Pool.abi, signer)
-  const LIQUIDITY = ethers.parseEther('0.0001')
+  const LIQUIDITY = ethers.parseEther('1')
   const DEADLINE = Math.floor(Date.now() / 1000) + 60 * 10
 
   const WethToken = new Token(network.config.chainId!, wethAddress, 18, 'WETH', 'Wrapped Ether')
   const UsdcToken = new Token(network.config.chainId!, usdcAddress, 6, 'USDC', 'USD Coin')
+  const UsdtToken = new Token(network.config.chainId!, usdtAddress, 6, 'USDT', 'Tether USD')
 
   const poolData = await getPoolData(poolContract)
   console.log(poolData)
   /*
-  {
-    tickSpacing: 10n,
-    fee: 500n,
-    liquidity: 0n,
-    sqrtPriceX96: 3543191142285914205922034323214n,
-    tick: 76012n
-  }
+    WETH-USDC
+    {
+      tickSpacing: 200n,
+      fee: 10000n,
+      liquidity: 1000000000000000n,
+      sqrtPriceX96: 4363404530764981740161790n,
+      tick: -196147n
+    }
+    WETH-USDT
+    {
+      tickSpacing: 10n,
+      fee: 500n,
+      liquidity: 0n,
+      sqrtPriceX96: 4339505179874779489431521n,
+      tick: -196257n
+    }
   */
 
   const pool = new Pool(
     WethToken,
-    UsdcToken,
+    UsdtToken,
     Number(poolData.fee),
     poolData.sqrtPriceX96.toString(),
     poolData.liquidity.toString(),
@@ -96,10 +111,10 @@ async function main() {
   })
 
   // await wethContract.approve(positionManager.target, ethers.parseEther('9999999'));
-  // await usdcContract.approve(positionManager.target, ethers.parseEther('9999999'));
+  await usdtContract.approve(positionManager.target, ethers.parseEther('9999999'));
 
   const { amount0: amount0Desired, amount1: amount1Desired } = position.mintAmounts
-  console.log(await wethContract.balanceOf(signer.address), await usdcContract.balanceOf(signer.address))
+  console.log(await wethContract.balanceOf(signer.address), await usdtContract.balanceOf(signer.address))
   console.log(amount0Desired.toString(), amount1Desired.toString())
   return
   const tx = await positionManager.mint(

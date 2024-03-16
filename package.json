@@ -16,7 +16,8 @@
     "contracts",
     "artifacts",
     "typechain",
-    "typechain-types"
+    "typechain-types",
+    "state.json"
   ],
   "engines": {
     "node": ">=18"

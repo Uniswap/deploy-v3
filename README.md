@@ -12,7 +12,7 @@ License changes must be enacted via the [ENS domain](https://ens.domains/) unisw
 
 - `node`: `namehash('uniswap.eth')` (`0xa2a03459171c76bff45817330c10ef9f8af07011a33005b73b50189bbc7e7132`)
 - `label`: `keccak256('v3-core-license-date')` (`0xee55740591b0fd5d7a28a6edc49567f6ff3febbe942ec0e2fa49ee536595085b`) or `keccak256('v3-core-license-grants')` (`0x15ff9b5bd7642701a10e5ea8fb29c957ffda4854cd028e9f6218506e6b509af2`)
-- `owner`: [`0x1a9C8182C09F50C8318d769245beA52c32BE35BC`](https://etherscan.io/address/0x1a9c8182c09f50c8318d769245bea52c32be35bc), the Uniswap Governance Timelock
+- `owner`: [`0x1a9c8182c09f50c8318d769245bea52c32be35bc`](https://etherscan.io/address/0x1a9c8182c09f50c8318d769245bea52c32be35bc), the Uniswap Governance Timelock
 - `resolver`: [`0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41`](https://etherscan.io/address/0x4976fb03c32e5b8cfe2b6ccb31c09ba78ebaba41), the public ENS resolver.
 - `ttl`: `0`
 
@@ -65,7 +65,7 @@ only mines blocks when the transactions is queued (e.g. a local testnet), you mu
 
 ## Development
 
-To run unit tests, run `yarn test`.
+To run unit tests, run `npm test`.
 
 For testing the script, run `yarn start`.
 

@@ -1,0 +1,5 @@
+{
+    "gitlens.hovers.annotations.over": "annotation",
+    "gitlens.blame.toggleMode": "window",
+    "gitlens.blame.format": "$message|50?} agoOrDate|14-}l"
+}

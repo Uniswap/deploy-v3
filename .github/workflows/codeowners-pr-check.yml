@@ -1,0 +1,32 @@
+name: CODEOWNERS Check on PR
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review]
+
+jobs:
+  check-codeowners-on-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if CODEOWNERS exists
+        id: check
+        run: |
+          REPO="${{ github.event.pull_request.head.repo.name }}"
+
+          if ! gh api repos/Uniswap/$REPO/contents/.github/CODEOWNERS >/dev/null 2>&1; then
+            echo "MISSING=true" >> $GITHUB_ENV
+          fi
+
+      - name: Add PR comment if CODEOWNERS missing
+        if: ${{ env.MISSING == 'true' }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --body "🚫 **This repo is missing a \`.github/CODEOWNERS\` file**
+
+This is required for code review enforcement. Please create it:
+
+\`\`\`
+# .github/CODEOWNERS
+* @Uniswap/your-team
+\`\`\`
+
+Once committed and pushed, this check will pass. <https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners|Learn more about CODEOWNERS>"

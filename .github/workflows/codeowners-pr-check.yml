@@ -7,30 +7,22 @@ jobs:
   check-codeowners-on-pr:
     runs-on: ubuntu-latest
     steps:
-      - name: Check if CODEOWNERS exists
-        id: check
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check if CODEOWNERS exists and comment if missing
         run: |
           REPO="${{ github.event.pull_request.head.repo.name }}"
-
-          if ! gh api repos/Uniswap/$REPO/contents/.github/CODEOWNERS >/dev/null 2>&1; then
-            echo "MISSING=true" >> $GITHUB_ENV
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          
+          # Check if CODEOWNERS file exists
+          if curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/Uniswap/$REPO/contents/.github/CODEOWNERS \
+            | grep -q '"message": "Not Found"'; then
+            
+            # File doesn't exist, post comment
+            curl -X POST \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              https://api.github.com/repos/Uniswap/$REPO/issues/$PR_NUMBER/comments \
+              -d '{
+                "body": "🚫 **This repo is missing a `.github/CODEOWNERS` file**\n\nThis is required for code review enforcement. Please create it:\n\n```\n# .github/CODEOWNERS\n* @Uniswap/your-team\n```\n\nOnce committed and pushed, this check will pass. [Learn more about CODEOWNERS](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners)"
+              }'
           fi
-
-      - name: Add PR comment if CODEOWNERS missing
-        if: ${{ env.MISSING == 'true' }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr comment ${{ github.event.pull_request.number }} \
-            --body "🚫 **This repo is missing a \`.github/CODEOWNERS\` file**
-
-This is required for code review enforcement. Please create it:
-
-\`\`\`
-# .github/CODEOWNERS
-* @Uniswap/your-team
-\`\`\`
-
-Once committed and pushed, this check will pass. <https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners|Learn more about CODEOWNERS>"

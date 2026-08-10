@@ -9,6 +9,8 @@ jobs:
     steps:
       - name: Check if CODEOWNERS exists
         id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           REPO="${{ github.event.pull_request.head.repo.name }}"
 
@@ -18,6 +20,8 @@ jobs:
 
       - name: Add PR comment if CODEOWNERS missing
         if: ${{ env.MISSING == 'true' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr comment ${{ github.event.pull_request.number }} \
             --body "🚫 **This repo is missing a \`.github/CODEOWNERS\` file**

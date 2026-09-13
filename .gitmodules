@@ -1,0 +1,9 @@
+[submodule "robinhood/lib/forge-std"]
+	path = robinhood/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
+[submodule "robinhood/lib/v4-periphery"]
+	path = robinhood/lib/v4-periphery
+	url = https://github.com/Uniswap/v4-periphery
+[submodule "robinhood/lib/v4-core"]
+	path = robinhood/lib/v4-core
+	url = https://github.com/Uniswap/v4-core

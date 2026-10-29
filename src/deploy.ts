@@ -17,6 +17,7 @@ import { DEPLOY_V3_STAKER } from './steps/deploy-v3-staker'
 import { DEPLOY_V3_SWAP_ROUTER_02 } from './steps/deploy-v3-swap-router-02'
 import { TRANSFER_PROXY_ADMIN } from './steps/transfer-proxy-admin'
 import { TRANSFER_V3_CORE_FACTORY_OWNER } from './steps/transfer-v3-core-factory-owner'
+import { DEPLOY_QUOTER} from './steps/deploy-quoter'
 
 const MIGRATION_STEPS: MigrationStep[] = [
   // must come first, for address calculations
@@ -31,7 +32,8 @@ const MIGRATION_STEPS: MigrationStep[] = [
   DEPLOY_NONFUNGIBLE_POSITION_MANAGER,
   DEPLOY_V3_MIGRATOR,
   TRANSFER_V3_CORE_FACTORY_OWNER,
-  DEPLOY_V3_STAKER,
+    DEPLOY_V3_STAKER,
+    DEPLOY_QUOTER,
   DEPLOY_QUOTER_V2,
   DEPLOY_V3_SWAP_ROUTER_02,
   TRANSFER_PROXY_ADMIN,
